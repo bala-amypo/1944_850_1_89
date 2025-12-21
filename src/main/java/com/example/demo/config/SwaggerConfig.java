@@ -22,6 +22,6 @@ public class SwaggerConfig {
                                 .email("your@email.com"))
                         .license(new License()
                                 .name("Apache 2.0")
-                                .url("https://www.apache.org/licenses/LICENSE-2.0")));
+                                .url("https://9452.pro604cr.amypo.ai/")));
     }
 }
