@@ -4,10 +4,10 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-public class UserController {
+public class VendorController {
 
     @GetMapping("/vendors")
     public String vendors() {
-        return "Vendors API working";
+        return "Vendor API working";
     }
 }

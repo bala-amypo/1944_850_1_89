@@ -1,13 +1,13 @@
 package com.example.demo.controller;
 
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("/invoices")
 public class InvoiceController {
 
-    @GetMapping
-    public String getInvoices() {
-        return "Invoice list";
+    @GetMapping("/invoices")
+    public String invoices() {
+        return "Invoice API working";
     }
 }

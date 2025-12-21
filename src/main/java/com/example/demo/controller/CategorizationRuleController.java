@@ -4,10 +4,10 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-public class UserController {
+public class CategorizationRuleController {
 
-    @GetMapping("/categories")
-    public String categories() {
-        return "Categories API working";
+    @GetMapping("/rules")
+    public String rules() {
+        return "Categorization Rule API working";
     }
 }
