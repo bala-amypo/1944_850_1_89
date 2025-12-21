@@ -1,8 +1,13 @@
-package com.example.demo.repository;
+package com.example.demo.service.impl;
 
-import org.springframework.stereotype.Repository;
+import org.springframework.stereotype.Service;
+import com.example.demo.service.CategoryService;
 
-@Repository
-public class CategoryRepository {
-    // Placeholder repository
+@Service
+public class CategoryServiceImpl implements CategoryService {
+
+    @Override
+    public String getAllCategories() {
+        return "List of categories";
+    }
 }
