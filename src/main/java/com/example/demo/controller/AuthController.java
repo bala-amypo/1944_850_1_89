@@ -10,4 +10,9 @@ public class AuthController {
     public String login() {
         return "Login successful";
     }
+
+    @PostMapping("/register")
+    public String register() {
+        return "User registered successfully";
+    }
 }

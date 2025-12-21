@@ -7,7 +7,7 @@ import org.springframework.web.bind.annotation.*;
 public class CategoryController {
 
     @GetMapping
-    public String getCategories() {
-        return "Category list";
+    public String getAllCategories() {
+        return "All categories fetched";
     }
 }

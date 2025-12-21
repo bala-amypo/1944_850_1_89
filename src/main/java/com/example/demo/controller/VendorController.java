@@ -7,7 +7,7 @@ import org.springframework.web.bind.annotation.*;
 public class VendorController {
 
     @GetMapping
-    public String getVendors() {
-        return "Vendor list";
+    public String getAllVendors() {
+        return "All vendors fetched";
     }
 }

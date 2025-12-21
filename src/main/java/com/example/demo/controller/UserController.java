@@ -7,7 +7,12 @@ import org.springframework.web.bind.annotation.*;
 public class UserController {
 
     @GetMapping
-    public String getUsers() {
-        return "User list";
+    public String getAllUsers() {
+        return "All users fetched";
+    }
+
+    @GetMapping("/{id}")
+    public String getUserById(@PathVariable Long id) {
+        return "User with id " + id;
     }
 }

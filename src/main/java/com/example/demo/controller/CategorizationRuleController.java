@@ -7,7 +7,7 @@ import org.springframework.web.bind.annotation.*;
 public class CategorizationRuleController {
 
     @GetMapping
-    public String getRules() {
-        return "Categorization rules";
+    public String getAllRules() {
+        return "All categorization rules fetched";
     }
 }
