@@ -1,18 +1,13 @@
 package com.example.demo.controller;
 
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("/users")
 public class UserController {
 
-    @GetMapping
-    public String getAllUsers() {
-        return "All users fetched";
-    }
-
-    @GetMapping("/{id}")
-    public String getUserById(@PathVariable Long id) {
-        return "User with id " + id;
+    @GetMapping("/users")
+    public String users() {
+        return "Users API working";
     }
 }
