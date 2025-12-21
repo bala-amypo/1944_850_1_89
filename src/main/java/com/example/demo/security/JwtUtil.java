@@ -1,7 +1,10 @@
 package com.example.demo.security;
 
+import io.jsonwebtoken.*;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
+
+import java.util.Date;
 
 @Component
 public class JwtUtil {
@@ -13,14 +16,19 @@ public class JwtUtil {
     private long expiration;
 
     public String generateToken(String username) {
-        return "dummy-jwt-token";
+        return Jwts.builder()
+                .setSubject(username)
+                .setIssuedAt(new Date())
+                .setExpiration(new Date(System.currentTimeMillis() + expiration))
+                .signWith(SignatureAlgorithm.HS256, secret)
+                .compact();
     }
 
     public String extractUsername(String token) {
-        return "user";
-    }
-
-    public boolean validateToken(String token) {
-        return true;
+        return Jwts.parser()
+                .setSigningKey(secret)
+                .parseClaimsJws(token)
+                .getBody()
+                .getSubject();
     }
 }
