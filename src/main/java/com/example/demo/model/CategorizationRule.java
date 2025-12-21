@@ -11,7 +11,7 @@ public class CategorizationRule {
 
     private String keyword;     // text to match
     private String matchType;   // EXACT / CONTAINS / STARTS_WITH
-    private int priority;
+    private Integer priority;
 
     @ManyToOne
     private Category category;
