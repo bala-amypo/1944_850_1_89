@@ -1,27 +1,20 @@
-package com.example.demo.model;
+package com.example.demo.entity;
 
-import jakarta.persistence.*;
-
-@Entity
 public class Invoice {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-
     private Double amount;
     private String description;
 
-    @ManyToOne
-    private User uploadedBy;
+    public Invoice() {
+    }
 
-    @ManyToOne
-    private Vendor vendor;
+    public Invoice(Long id, Double amount, String description) {
+        this.id = id;
+        this.amount = amount;
+        this.description = description;
+    }
 
-    @ManyToOne
-    private Category category;
-
-    // getters & setters
     public Long getId() {
         return id;
     }
@@ -44,29 +37,5 @@ public class Invoice {
 
     public void setDescription(String description) {
         this.description = description;
-    }
-
-    public User getUploadedBy() {
-        return uploadedBy;
-    }
-
-    public void setUploadedBy(User uploadedBy) {
-        this.uploadedBy = uploadedBy;
-    }
-
-    public Vendor getVendor() {
-        return vendor;
-    }
-
-    public void setVendor(Vendor vendor) {
-        this.vendor = vendor;
-    }
-
-    public Category getCategory() {
-        return category;
-    }
-
-    public void setCategory(Category category) {
-        this.category = category;
     }
 }

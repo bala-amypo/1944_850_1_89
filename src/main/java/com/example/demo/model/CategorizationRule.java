@@ -1,22 +1,20 @@
-package com.example.demo.model;
+package com.example.demo.entity;
 
-import jakarta.persistence.*;
-
-@Entity
 public class CategorizationRule {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+    private String keyword;
+    private String category;
 
-    private String keyword;     // text to match
-    private String matchType;   // EXACT / CONTAINS / STARTS_WITH
-    private Integer priority;
+    public CategorizationRule() {
+    }
 
-    @ManyToOne
-    private Category category;
+    public CategorizationRule(Long id, String keyword, String category) {
+        this.id = id;
+        this.keyword = keyword;
+        this.category = category;
+    }
 
-    // getters & setters
     public Long getId() {
         return id;
     }
@@ -33,27 +31,11 @@ public class CategorizationRule {
         this.keyword = keyword;
     }
 
-    public String getMatchType() {
-        return matchType;
-    }
-
-    public void setMatchType(String matchType) {
-        this.matchType = matchType;
-    }
-
-    public Integer getPriority() {
-        return priority;
-    }
-
-    public void setPriority(int priority) {
-        this.priority = priority;
-    }
-
-    public Category getCategory() {
+    public String getCategory() {
         return category;
     }
 
-    public void setCategory(Category category) {
+    public void setCategory(String category) {
         this.category = category;
     }
 }
