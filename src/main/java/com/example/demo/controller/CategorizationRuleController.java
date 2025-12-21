@@ -1,13 +1,13 @@
 package com.example.demo.controller;
 
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("/rules")
-public class CategorizationRuleController {
+public class UserController {
 
-    @GetMapping
-    public String getAllRules() {
-        return "All categorization rules fetched";
+    @GetMapping("/categories")
+    public String categories() {
+        return "Categories API working";
     }
 }
