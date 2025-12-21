@@ -12,8 +12,8 @@ import org.springframework.context.annotation.Configuration;
 public class SwaggerConfig {
 
     @Bean
-    public OpenAPI customOpenAPI() {
-        return new OpenAPI()
+    public OpenAPI SwaggerOpenAPI() {
+        return new OpenAPI();
                 .info(new Info()
                         .title("Smart Invoice Categorization API")
                         .description("REST API for intelligent invoice categorization using rule-based matching")
