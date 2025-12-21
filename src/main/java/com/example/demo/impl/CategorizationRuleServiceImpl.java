@@ -40,7 +40,7 @@ public class CategorizationRuleServiceImpl implements CategorizationRuleService 
             throw new IllegalArgumentException("Match type must be EXACT, CONTAINS, or REGEX");
         }
 
-        if (rule.getPriority() == null || rule.getPriority() <= 0) {
+        if (rule.getPriority() == null{
             throw new IllegalArgumentException("Priority must be greater than 0");
         }
 

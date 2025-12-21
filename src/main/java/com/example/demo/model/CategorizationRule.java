@@ -41,7 +41,7 @@ public class CategorizationRule {
         this.matchType = matchType;
     }
 
-    public int getPriority() {
+    public Integer getPriority() {
         return priority;
     }
 
