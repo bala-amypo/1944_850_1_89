@@ -1,19 +1,10 @@
-package com.example.demo.entity;
+package com.example.demo.model;
 
 public class User {
 
     private Long id;
     private String username;
     private String email;
-
-    public User() {
-    }
-
-    public User(Long id, String username, String email) {
-        this.id = id;
-        this.username = username;
-        this.email = email;
-    }
 
     public Long getId() {
         return id;
