@@ -1,13 +1,21 @@
 package com.example.demo.controller;
 
-import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.bind.annotation.GetMapping;
+import com.example.demo.model.Category;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
+@RequestMapping("/categories")
 public class CategoryController {
 
-    @GetMapping("/categories")
-    public String categories() {
-        return "Categories API";
+    @PostMapping
+    public Category createCategory(@RequestBody Category category) {
+        return category;
+    }
+
+    @GetMapping
+    public List<Category> getAllCategories() {
+        return List.of();
     }
 }

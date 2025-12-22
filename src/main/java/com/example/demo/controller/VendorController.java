@@ -1,13 +1,21 @@
 package com.example.demo.controller;
 
-import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.bind.annotation.GetMapping;
+import com.example.demo.model.Vendor;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
+@RequestMapping("/vendors")
 public class VendorController {
 
-    @GetMapping("/vendors")
-    public String vendors() {
-        return "Vendors API";
+    @PostMapping
+    public Vendor createVendor(@RequestBody Vendor vendor) {
+        return vendor;
+    }
+
+    @GetMapping
+    public List<Vendor> getAllVendors() {
+        return List.of();
     }
 }
