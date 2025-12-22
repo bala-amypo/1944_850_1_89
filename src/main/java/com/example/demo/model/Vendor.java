@@ -1,31 +1,16 @@
-package com.example.demo.entity;
+package com.example.demo.model;
 
-public class Vendor {
-
+public class CategorizationRule {
     private Long id;
-    private String name;
+    private String keyword;
+    private String category;
 
-    public Vendor() {
-    }
+    public Long getId() { return id; }
+    public void setId(Long id) { this.id = id; }
 
-    public Vendor(Long id, String name) {
-        this.id = id;
-        this.name = name;
-    }
+    public String getKeyword() { return keyword; }
+    public void setKeyword(String keyword) { this.keyword = keyword; }
 
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
+    public String getCategory() { return category; }
+    public void setCategory(String category) { this.category = category; }
 }
