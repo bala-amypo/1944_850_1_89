@@ -1,35 +1,39 @@
 package com.example.demo.service.impl;
 
-import com.example.demo.exception.ResourceNotFoundException;
-import com.example.demo.model.Category;
+import com.example.demo.model.CategorizationRule;
+import com.example.demo.repository.CategorizationRuleRepository;
 import com.example.demo.repository.CategoryRepository;
-import com.example.demo.service.CategoryService;
+import com.example.demo.service.CategorizationRuleService;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
 @Service
-public class CategoryServiceImpl implements CategoryService {
+public class CategorizationRuleServiceImpl implements CategorizationRuleService {
 
+    private final CategorizationRuleRepository ruleRepository;
     private final CategoryRepository categoryRepository;
 
-    public CategoryServiceImpl(CategoryRepository categoryRepository) {
+    // ✅ THIS constructor is REQUIRED by your TestNG tests
+    public CategorizationRuleServiceImpl(
+            CategorizationRuleRepository ruleRepository,
+            CategoryRepository categoryRepository) {
+        this.ruleRepository = ruleRepository;
         this.categoryRepository = categoryRepository;
     }
 
     @Override
-    public Category createCategory(Category category) {
-        return categoryRepository.save(category);
+    public CategorizationRule createRule(CategorizationRule rule) {
+        return ruleRepository.save(rule);
     }
 
     @Override
-    public List<Category> getAllCategories() {
-        return categoryRepository.findAll();
+    public List<CategorizationRule> getAllRules() {
+        return ruleRepository.findAll();
     }
 
     @Override
-    public Category getCategory(Long id) {
-        return categoryRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Category not found"));
+    public List<CategorizationRule> findMatchingRules(String description) {
+        return ruleRepository.findMatchingRulesByDescription(description);
     }
 }
