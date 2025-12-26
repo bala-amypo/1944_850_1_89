@@ -1,70 +1,89 @@
 package com.example.demo.service.impl;
 
-import com.example.demo.exception.ResourceNotFoundException;
+import com.example.demo.model.CategorizationRule;
+import com.example.demo.model.Category;
 import com.example.demo.model.Invoice;
-import com.example.demo.model.User;
 import com.example.demo.model.Vendor;
 import com.example.demo.repository.CategorizationRuleRepository;
+import com.example.demo.repository.CategoryRepository;
 import com.example.demo.repository.InvoiceRepository;
-import com.example.demo.repository.UserRepository;
 import com.example.demo.repository.VendorRepository;
 import com.example.demo.service.InvoiceService;
 import com.example.demo.util.InvoiceCategorizationEngine;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Service
 public class InvoiceServiceImpl implements InvoiceService {
 
     private final InvoiceRepository invoiceRepository;
-    private final UserRepository userRepository;
+    private final CategoryRepository categoryRepository;
     private final VendorRepository vendorRepository;
     private final CategorizationRuleRepository ruleRepository;
     private final InvoiceCategorizationEngine engine;
 
+    // ✅ REQUIRED CONSTRUCTOR (MATCHES SPRING + TESTS)
     public InvoiceServiceImpl(
             InvoiceRepository invoiceRepository,
-            UserRepository userRepository,
+            CategoryRepository categoryRepository,
             VendorRepository vendorRepository,
             CategorizationRuleRepository ruleRepository,
-            InvoiceCategorizationEngine engine) {
-
+            InvoiceCategorizationEngine engine
+    ) {
         this.invoiceRepository = invoiceRepository;
-        this.userRepository = userRepository;
+        this.categoryRepository = categoryRepository;
         this.vendorRepository = vendorRepository;
         this.ruleRepository = ruleRepository;
         this.engine = engine;
     }
 
+    // ✅ CREATE INVOICE
     @Override
-    public Invoice uploadInvoice(Long userId, Long vendorId, Invoice invoice) {
+    public Invoice createInvoice(Invoice invoice) {
 
-        User user = userRepository.findById(userId)
-                .orElseThrow(() -> new ResourceNotFoundException("User not found"));
+        // Set uploaded time if not present
+        if (invoice.getUploadedAt() == null) {
+            invoice.setUploadedAt(LocalDateTime.now());
+        }
 
-        Vendor vendor = vendorRepository.findById(vendorId)
-                .orElseThrow(() -> new ResourceNotFoundException("Vendor not found"));
+        // Load categorization rules
+        List<CategorizationRule> rules = ruleRepository.findAll();
 
-        invoice.setUploadedBy(user);
-        invoice.setVendor(vendor);
-        invoice.setCategory(null);
+        // Determine category name using engine
+        String categoryName = engine.determineCategory(invoice, rules);
+
+        if (categoryName != null) {
+            Category category = categoryRepository
+                    .findByCategoryName(categoryName)
+                    .orElse(null);
+
+            invoice.setCategory(category);
+        }
 
         return invoiceRepository.save(invoice);
     }
 
+    // ✅ GET ALL INVOICES
     @Override
-    public Invoice getInvoice(Long id) {
-        return invoiceRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Invoice not found"));
+    public List<Invoice> getAllInvoices() {
+        return invoiceRepository.findAll();
     }
 
+    // ✅ GET INVOICE BY ID
     @Override
-    public List<Invoice> getInvoicesByUser(Long userId) {
+    public Invoice getInvoiceById(Long id) {
+        return invoiceRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Invoice not found with id: " + id));
+    }
 
-        User user = userRepository.findById(userId)
-                .orElseThrow(() -> new ResourceNotFoundException("User not found"));
-
-        return invoiceRepository.findByUploadedBy(user);
+    // ✅ DELETE INVOICE
+    @Override
+    public void deleteInvoice(Long id) {
+        if (!invoiceRepository.existsById(id)) {
+            throw new RuntimeException("Invoice not found with id: " + id);
+        }
+        invoiceRepository.deleteById(id);
     }
 }
