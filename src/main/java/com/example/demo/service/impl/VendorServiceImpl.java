@@ -9,7 +9,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 
-@Service   // ✅ THIS REGISTERS THE BEAN
+@Service
 public class VendorServiceImpl implements VendorService {
 
     private final VendorRepository vendorRepository;
@@ -19,7 +19,12 @@ public class VendorServiceImpl implements VendorService {
     }
 
     @Override
-    public Vendor getVendorById(Long id) {
+    public Vendor createVendor(Vendor vendor) {
+        return vendorRepository.save(vendor);
+    }
+
+    @Override
+    public Vendor getVendor(Long id) {
         return vendorRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Vendor not found"));
     }
@@ -27,10 +32,5 @@ public class VendorServiceImpl implements VendorService {
     @Override
     public List<Vendor> getAllVendors() {
         return vendorRepository.findAll();
-    }
-
-    @Override
-    public Vendor saveVendor(Vendor vendor) {
-        return vendorRepository.save(vendor);
     }
 }

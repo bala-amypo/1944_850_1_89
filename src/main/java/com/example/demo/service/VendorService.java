@@ -5,9 +5,9 @@ import java.util.List;
 
 public interface VendorService {
 
-    Vendor getVendorById(Long id);
+    Vendor createVendor(Vendor vendor);
+
+    Vendor getVendor(Long id);
 
     List<Vendor> getAllVendors();
-
-    Vendor saveVendor(Vendor vendor);
 }
