@@ -1,8 +1,9 @@
 package com.example.demo.repository;
 
-import org.springframework.stereotype.Repository;
+import com.example.demo.model.Category;
+import java.util.Optional;
 
-@Repository
-public class CategoryRepository {
-    // Placeholder repository
+public interface CategoryRepository {
+
+    Optional<Category> findById(Long id);
 }

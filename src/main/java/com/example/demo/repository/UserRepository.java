@@ -1,8 +1,13 @@
 package com.example.demo.repository;
 
-import org.springframework.stereotype.Repository;
+import com.example.demo.model.User;
+import java.util.Optional;
 
-@Repository
-public class UserRepository {
-    // Placeholder repository
+public interface UserRepository {
+
+    boolean existsByEmail(String email);
+
+    Optional<User> findById(Long id);
+
+    User save(User user);
 }

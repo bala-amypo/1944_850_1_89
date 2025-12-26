@@ -1,16 +1,38 @@
 package com.example.demo.model;
 
-public class CategorizationRule {
-    private Long id;
-    private String keyword;
-    private String category;
+import jakarta.persistence.*;
+import java.time.LocalDateTime;
 
-    public Long getId() { return id; }
-    public void setId(Long id) { this.id = id; }
+@Entity
+public class CategorizationRule {
+
+    @Id
+    @GeneratedValue
+    private Long id;
+
+    @ManyToOne
+    private Category category;
+
+    private String keyword;
+    private String matchType;
+    private int priority;
+    private LocalDateTime createdAt;
+
+    @PrePersist
+    public void prePersist() {
+        createdAt = LocalDateTime.now();
+    }
+
+    // getters & setters
+    public Category getCategory() { return category; }
+    public void setCategory(Category category) { this.category = category; }
 
     public String getKeyword() { return keyword; }
     public void setKeyword(String keyword) { this.keyword = keyword; }
 
-    public String getCategory() { return category; }
-    public void setCategory(String category) { this.category = category; }
+    public String getMatchType() { return matchType; }
+    public void setMatchType(String matchType) { this.matchType = matchType; }
+
+    public int getPriority() { return priority; }
+    public void setPriority(int priority) { this.priority = priority; }
 }

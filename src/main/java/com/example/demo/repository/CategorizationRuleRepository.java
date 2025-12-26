@@ -1,8 +1,9 @@
 package com.example.demo.repository;
 
-import org.springframework.stereotype.Repository;
+import com.example.demo.model.CategorizationRule;
+import java.util.List;
 
-@Repository
-public class CategorizationRuleRepository {
-    // Placeholder repository
+public interface CategorizationRuleRepository {
+
+    List<CategorizationRule> findMatchingRulesByDescription(String description);
 }

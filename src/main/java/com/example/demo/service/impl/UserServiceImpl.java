@@ -1,18 +1,24 @@
 package com.example.demo.service.impl;
 
-import org.springframework.stereotype.Service;
-import com.example.demo.service.UserService;
+import com.example.demo.model.User;
+import com.example.demo.repository.UserRepository;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
-@Service
-public class UserServiceImpl implements UserService {
+public class UserServiceImpl {
 
-    @Override
-    public String getAllUsers() {
-        return "List of users";
+    private final UserRepository repo;
+    private final PasswordEncoder encoder;
+
+    public UserServiceImpl(UserRepository repo, PasswordEncoder encoder) {
+        this.repo = repo;
+        this.encoder = encoder;
     }
 
-    @Override
-    public String getUserById(Long id) {
-        return "User with ID: " + id;
+    public User registerUser(User user) {
+        if (repo.existsByEmail(user.getEmail()))
+            throw new IllegalArgumentException("Email already in use");
+
+        user.setPassword(encoder.encode(user.getPassword()));
+        return repo.save(user);
     }
 }

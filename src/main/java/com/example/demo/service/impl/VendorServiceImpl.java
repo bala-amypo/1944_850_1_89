@@ -1,13 +1,17 @@
 package com.example.demo.service.impl;
 
-import org.springframework.stereotype.Service;
-import com.example.demo.service.VendorService;
+import com.example.demo.model.Vendor;
+import com.example.demo.repository.VendorRepository;
 
-@Service
-public class VendorServiceImpl implements VendorService {
+public class VendorServiceImpl {
 
-    @Override
-    public String getAllVendors() {
-        return "List of vendors";
+    private final VendorRepository repo;
+
+    public VendorServiceImpl(VendorRepository repo) {
+        this.repo = repo;
+    }
+
+    public Vendor createVendor(Vendor vendor) {
+        return repo.save(vendor);
     }
 }

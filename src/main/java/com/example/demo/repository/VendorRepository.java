@@ -1,8 +1,11 @@
 package com.example.demo.repository;
 
-import org.springframework.stereotype.Repository;
+import com.example.demo.model.Vendor;
+import java.util.Optional;
 
-@Repository
-public class VendorRepository {
-    // Placeholder repository
+public interface VendorRepository {
+
+    Vendor save(Vendor vendor);
+
+    Optional<Vendor> findById(Long id);
 }
