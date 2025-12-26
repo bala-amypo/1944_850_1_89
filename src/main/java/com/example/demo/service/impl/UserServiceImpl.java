@@ -1,24 +1,22 @@
-package com.example.demo.service.impl;
+package com.example.demo.service;
 
-import com.example.demo.model.User;
+import com.example.demo.entity.User;
 import com.example.demo.repository.UserRepository;
-import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.stereotype.Service;
 
-public class UserServiceImpl {
+import java.util.Optional;
 
-    private final UserRepository repo;
-    private final PasswordEncoder encoder;
+@Service
+public class UserServiceImpl implements UserService {
 
-    public UserServiceImpl(UserRepository repo, PasswordEncoder encoder) {
-        this.repo = repo;
-        this.encoder = encoder;
+    private final UserRepository userRepository;
+
+    public UserServiceImpl(UserRepository userRepository) {
+        this.userRepository = userRepository;
     }
 
-    public User registerUser(User user) {
-        if (repo.existsByEmail(user.getEmail()))
-            throw new IllegalArgumentException("Email already in use");
-
-        user.setPassword(encoder.encode(user.getPassword()));
-        return repo.save(user);
+    @Override
+    public Optional<User> findByEmail(String email) {
+        return userRepository.findByEmail(email);
     }
 }
