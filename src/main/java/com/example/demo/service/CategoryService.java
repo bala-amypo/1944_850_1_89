@@ -1,6 +1,7 @@
 package com.example.demo.service;
 
-public interface CategoryService {
+import com.example.demo.model.Category;
 
-    String getAllCategories();
+public interface CategoryService {
+    Category getCategory(Long id);
 }

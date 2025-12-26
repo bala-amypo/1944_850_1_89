@@ -1,6 +1,8 @@
 package com.example.demo.service;
 
-public interface CategorizationRuleService {
+import com.example.demo.model.CategorizationRule;
+import java.util.List;
 
-    String getAllRules();
+public interface CategorizationRuleService {
+    List<CategorizationRule> getMatchingRules(String description);
 }

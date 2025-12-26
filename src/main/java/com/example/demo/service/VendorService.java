@@ -1,6 +1,7 @@
 package com.example.demo.service;
 
-public interface VendorService {
+import com.example.demo.model.Vendor;
 
-    String getAllVendors();
+public interface VendorService {
+    Vendor createVendor(Vendor vendor);
 }
