@@ -1,8 +1,8 @@
 package com.example.demo.service;
 
-import com.example.demo.entity.User;
-import java.util.Optional;
+import com.example.demo.model.User;
 
 public interface UserService {
-    Optional<User> findByEmail(String email);
+
+    User registerUser(User user);
 }

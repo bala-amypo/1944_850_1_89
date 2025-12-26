@@ -1,8 +1,14 @@
 package com.example.demo.service;
 
 import com.example.demo.model.CategorizationRule;
+
 import java.util.List;
 
 public interface CategorizationRuleService {
-    List<CategorizationRule> getMatchingRules(String description);
+
+    CategorizationRule createRule(CategorizationRule rule);
+
+    List<CategorizationRule> getAllRules();
+
+    List<CategorizationRule> findMatchingRules(String description);
 }
