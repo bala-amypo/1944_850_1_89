@@ -5,13 +5,13 @@ import com.example.demo.repository.VendorRepository;
 
 public class VendorServiceImpl {
 
-    private final VendorRepository repo;
+    private final VendorRepository vendorRepository;
 
-    public VendorServiceImpl(VendorRepository repo) {
-        this.repo = repo;
+    public VendorServiceImpl(VendorRepository vendorRepository) {
+        this.vendorRepository = vendorRepository;
     }
 
     public Vendor createVendor(Vendor vendor) {
-        return repo.save(vendor);
+        return vendorRepository.save(vendor);
     }
 }
