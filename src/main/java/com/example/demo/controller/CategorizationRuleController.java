@@ -1,6 +1,7 @@
 package com.example.demo.controller;
 
 import com.example.demo.model.CategorizationRule;
+import com.example.demo.service.CategorizationRuleService;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -9,13 +10,16 @@ import java.util.List;
 @RequestMapping("/rules")
 public class CategorizationRuleController {
 
-    @PostMapping
-    public CategorizationRule createRule(@RequestBody CategorizationRule rule) {
-        return rule;
+    private final CategorizationRuleService ruleService;
+
+    public CategorizationRuleController(CategorizationRuleService ruleService) {
+        this.ruleService = ruleService;
     }
 
     @GetMapping
-    public List<CategorizationRule> getAllRules() {
-        return List.of();
+    public List<CategorizationRule> getMatchingRules(
+            @RequestParam String description) {
+
+        return ruleService.getMatchingRules(description);
     }
 }
