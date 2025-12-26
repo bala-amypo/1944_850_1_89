@@ -1,21 +1,29 @@
 package com.example.demo.controller;
 
 import com.example.demo.model.Category;
-import com.example.demo.service.CategoryService;
+import com.example.demo.repository.CategoryRepository;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
-@RequestMapping("/categories")
+@RequestMapping("/api/categories")
 public class CategoryController {
 
-    private final CategoryService categoryService;
+    private final CategoryRepository categoryRepository;
 
-    public CategoryController(CategoryService categoryService) {
-        this.categoryService = categoryService;
+    public CategoryController(CategoryRepository categoryRepository) {
+        this.categoryRepository = categoryRepository;
     }
 
-    @GetMapping("/{id}")
-    public Category getCategory(@PathVariable Long id) {
-        return categoryService.getCategory(id);
+    @PostMapping
+    public ResponseEntity<Category> createCategory(@RequestBody Category category) {
+        return ResponseEntity.ok(categoryRepository.save(category));
+    }
+
+    @GetMapping
+    public ResponseEntity<List<Category>> getAllCategories() {
+        return ResponseEntity.ok(categoryRepository.findAll());
     }
 }

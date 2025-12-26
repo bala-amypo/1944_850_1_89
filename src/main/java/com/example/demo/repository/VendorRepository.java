@@ -1,11 +1,7 @@
 package com.example.demo.repository;
 
 import com.example.demo.model.Vendor;
-import java.util.Optional;
+import org.springframework.data.jpa.repository.JpaRepository;
 
-public interface VendorRepository {
-
-    Vendor save(Vendor vendor);
-
-    Optional<Vendor> findById(Long id);
+public interface VendorRepository extends JpaRepository<Vendor, Long> {
 }

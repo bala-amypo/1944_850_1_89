@@ -1,21 +1,22 @@
 package com.example.demo.controller;
 
 import com.example.demo.model.Vendor;
-import com.example.demo.service.VendorService;
+import com.example.demo.service.impl.VendorServiceImpl;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/vendors")
+@RequestMapping("/api/vendors")
 public class VendorController {
 
-    private final VendorService vendorService;
+    private final VendorServiceImpl vendorService;
 
-    public VendorController(VendorService vendorService) {
+    public VendorController(VendorServiceImpl vendorService) {
         this.vendorService = vendorService;
     }
 
     @PostMapping
-    public Vendor createVendor(@RequestBody Vendor vendor) {
-        return vendorService.createVendor(vendor);
+    public ResponseEntity<Vendor> createVendor(@RequestBody Vendor vendor) {
+        return ResponseEntity.ok(vendorService.createVendor(vendor));
     }
 }
