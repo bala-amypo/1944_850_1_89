@@ -1,15 +1,14 @@
 package com.example.demo.service;
 
 import com.example.demo.model.Invoice;
+
 import java.util.List;
 
 public interface InvoiceService {
 
-    Invoice createInvoice(Invoice invoice);
+    Invoice uploadInvoice(Long userId, Long vendorId, Invoice invoice);
 
-    List<Invoice> getAllInvoices();
+    List<Invoice> getInvoicesByUser(Long userId);
 
-    Invoice getInvoiceById(Long id);
-
-    void deleteInvoice(Long id);
+    void deleteInvoice(Long invoiceId);
 }
