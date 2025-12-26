@@ -1,37 +1,33 @@
 package com.example.demo.util;
 
 import com.example.demo.model.Category;
-import com.example.demo.model.CategorizationRule;
 import com.example.demo.model.Invoice;
+import com.example.demo.model.CategorizationRule;
+import org.springframework.stereotype.Component;
 
-import java.util.Comparator;
 import java.util.List;
 
+@Component
 public class InvoiceCategorizationEngine {
 
-    public Category determineCategory(
-            Invoice invoice,
-            List<CategorizationRule> rules) {
+    public Category categorize(Invoice invoice, List<CategorizationRule> rules) {
 
         if (rules == null || rules.isEmpty()) {
             return null;
         }
 
-        return rules.stream()
-                .sorted(Comparator.comparingInt(CategorizationRule::getPriority).reversed())
-                .filter(rule -> {
-                    String desc = invoice.getDescription();
-                    String key = rule.getKeyword();
+        String description = invoice.getDescription();
+        if (description == null) {
+            return null;
+        }
 
-                    return switch (rule.getMatchType()) {
-                        case "EXACT" -> desc.equalsIgnoreCase(key);
-                        case "CONTAINS" -> desc.toLowerCase().contains(key.toLowerCase());
-                        case "REGEX" -> desc.matches(key);
-                        default -> false;
-                    };
-                })
-                .map(CategorizationRule::getCategory)
-                .findFirst()
-                .orElse(null);
+        for (CategorizationRule rule : rules) {
+            if (description.toLowerCase()
+                    .contains(rule.getKeyword().toLowerCase())) {
+                return rule.getCategory();
+            }
+        }
+
+        return null; // no match found
     }
 }
