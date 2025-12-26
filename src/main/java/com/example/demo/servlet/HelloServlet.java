@@ -1,17 +1,18 @@
 package com.example.demo.servlet;
 
+import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import jakarta.servlet.ServletException;
 
 import java.io.IOException;
 
+@WebServlet(urlPatterns = "/hello")
 public class HelloServlet extends HttpServlet {
 
     @Override
-    protected void doGet(HttpServletRequest req, HttpServletResponse resp)
-            throws ServletException, IOException {
-        resp.getWriter().write("Hello");
+    protected void doGet(HttpServletRequest request, HttpServletResponse response)
+            throws IOException {
+        response.getWriter().write("Hello Servlet");
     }
 }
