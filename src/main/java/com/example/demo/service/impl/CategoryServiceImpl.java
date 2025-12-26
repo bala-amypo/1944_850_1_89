@@ -1,13 +1,20 @@
-package com.example.demo.service.impl;
+package com.example.demo.impl;
 
-import org.springframework.stereotype.Service;
-import com.example.demo.service.CategoryService;
+import com.example.demo.exception.ResourceNotFoundException;
+import com.example.demo.model.Category;
+import com.example.demo.repository.CategoryRepository;
 
-@Service
-public class CategoryServiceImpl implements CategoryService {
+public class CategoryServiceImpl {
 
-    @Override
-    public String getAllCategories() {
-        return "List of categories";
+    private final CategoryRepository categoryRepository;
+
+    public CategoryServiceImpl(CategoryRepository categoryRepository) {
+        this.categoryRepository = categoryRepository;
+    }
+
+    public Category getCategory(Long id) {
+        return categoryRepository.findById(id)
+                .orElseThrow(() ->
+                        new ResourceNotFoundException("Category not found"));
     }
 }
