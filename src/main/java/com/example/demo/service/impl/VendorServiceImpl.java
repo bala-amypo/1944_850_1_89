@@ -26,4 +26,3 @@ public class VendorServiceImpl implements VendorService {
         return vendorRepository.findAll();
     }
 }
-`
