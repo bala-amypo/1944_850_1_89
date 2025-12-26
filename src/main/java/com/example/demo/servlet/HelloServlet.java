@@ -3,7 +3,10 @@ package com.example.demo.service;
 import com.example.demo.model.Vendor;
 import java.util.List;
 
-public interface VendorService {
+public class HelloServlet extends HttpServlet {
+    // servlet code only
+
+
 
     Vendor createVendor(Vendor vendor);
 
