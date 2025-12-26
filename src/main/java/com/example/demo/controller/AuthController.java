@@ -2,6 +2,7 @@ package com.example.demo.controller;
 
 import com.example.demo.dto.AuthRequest;
 import com.example.demo.dto.AuthResponse;
+import com.example.demo.exception.ResourceNotFoundException;
 import com.example.demo.model.User;
 import com.example.demo.repository.UserRepository;
 import com.example.demo.security.JwtUtil;
@@ -20,6 +21,7 @@ public class AuthController {
     private final UserDetailsService userDetailsService;
     private final UserRepository userRepository;
 
+    // Constructor injection as required by Step 0
     public AuthController(AuthenticationManager authenticationManager, JwtUtil jwtUtil, 
                           UserDetailsService userDetailsService, UserRepository userRepository) {
         this.authenticationManager = authenticationManager;
@@ -30,18 +32,19 @@ public class AuthController {
 
     @PostMapping("/login")
     public AuthResponse login(@RequestBody AuthRequest request) {
-        // 1. Authenticate the user
+        // 1. Authenticate via Spring Security
         authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(request.getEmail(), request.getPassword())
         );
 
-        // 2. Load UserDetails (Required by generateToken)
+        // 2. Load UserDetails for JWT generation
         UserDetails userDetails = userDetailsService.loadUserByUsername(request.getEmail());
 
-        // 3. Load User Entity (Required by generateToken and AuthResponse)
-        User user = userRepository.findByEmail(request.getEmail());
+        // 3. FIX: Handle Optional return type and throw specific error for tests
+        User user = userRepository.findByEmail(request.getEmail())
+                .orElseThrow(() -> new ResourceNotFoundException("User not found"));
 
-        // 4. Generate token with BOTH arguments as required by tests
+        // 4. Generate token using the required (UserDetails, User) signature
         String token = jwtUtil.generateToken(userDetails, user);
 
         return new AuthResponse(token, user.getId(), user.getEmail(), user.getRole());
