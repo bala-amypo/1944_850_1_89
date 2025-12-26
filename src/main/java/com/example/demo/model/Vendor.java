@@ -1,7 +1,6 @@
 package com.example.demo.model;
 
 import jakarta.persistence.*;
-import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -9,20 +8,13 @@ import java.util.Set;
 public class Vendor {
 
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     private String vendorName;
-    private String contactEmail;
-    private LocalDateTime createdAt;
 
     @ManyToMany(mappedBy = "favoriteVendors")
     private Set<User> users = new HashSet<>();
-
-    @PrePersist
-    public void prePersist() {
-        createdAt = LocalDateTime.now();
-    }
 
     public Long getId() { return id; }
     public void setId(Long id) { this.id = id; }

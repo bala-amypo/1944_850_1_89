@@ -6,21 +6,24 @@ import java.time.LocalDateTime;
 
 @Entity
 @Table(
-    uniqueConstraints = @UniqueConstraint(columnNames = {"vendor_id", "invoiceNumber"})
+        uniqueConstraints = @UniqueConstraint(
+                columnNames = {"vendor_id", "invoiceNumber"}
+        )
 )
 public class Invoice {
 
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
+    private String invoiceNumber;
+    private String description;
+    private Double amount;
+    private LocalDate invoiceDate;
+    private LocalDateTime uploadedAt;
 
     @ManyToOne
     private Vendor vendor;
-
-    private String invoiceNumber;
-    private Double amount;
-    private LocalDate invoiceDate;
-    private String description;
 
     @ManyToOne
     private Category category;
@@ -28,29 +31,35 @@ public class Invoice {
     @ManyToOne
     private User uploadedBy;
 
-    private LocalDateTime uploadedAt;
-
     @PrePersist
     public void prePersist() {
         uploadedAt = LocalDateTime.now();
     }
 
     // getters & setters
-    public void setId(Long id) { this.id = id; }
     public Long getId() { return id; }
+    public void setId(Long id) { this.id = id; }
 
-    public void setVendor(Vendor vendor) { this.vendor = vendor; }
-    public Vendor getVendor() { return vendor; }
+    public String getInvoiceNumber() { return invoiceNumber; }
+    public void setInvoiceNumber(String invoiceNumber) { this.invoiceNumber = invoiceNumber; }
 
-    public void setUploadedBy(User uploadedBy) { this.uploadedBy = uploadedBy; }
-    public User getUploadedBy() { return uploadedBy; }
-
-    public void setCategory(Category category) { this.category = category; }
-    public Category getCategory() { return category; }
-
-    public void setAmount(Double amount) { this.amount = amount; }
-    public Double getAmount() { return amount; }
-
-    public void setDescription(String description) { this.description = description; }
     public String getDescription() { return description; }
+    public void setDescription(String description) { this.description = description; }
+
+    public Double getAmount() { return amount; }
+    public void setAmount(Double amount) { this.amount = amount; }
+
+    public LocalDate getInvoiceDate() { return invoiceDate; }
+    public void setInvoiceDate(LocalDate invoiceDate) { this.invoiceDate = invoiceDate; }
+
+    public Vendor getVendor() { return vendor; }
+    public void setVendor(Vendor vendor) { this.vendor = vendor; }
+
+    public Category getCategory() { return category; }
+    public void setCategory(Category category) { this.category = category; }
+
+    public User getUploadedBy() { return uploadedBy; }
+    public void setUploadedBy(User uploadedBy) { this.uploadedBy = uploadedBy; }
+
+    public LocalDateTime getUploadedAt() { return uploadedAt; }
 }

@@ -7,16 +7,15 @@ import java.util.Set;
 
 @Entity
 @Table(
-    name = "users",
-    uniqueConstraints = @UniqueConstraint(columnNames = "email")
+        name = "users",
+        uniqueConstraints = @UniqueConstraint(columnNames = "email")
 )
 public class User {
 
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private String fullName;
     private String email;
     private String password;
     private String role;
@@ -24,6 +23,11 @@ public class User {
     private LocalDateTime createdAt;
 
     @ManyToMany
+    @JoinTable(
+            name = "user_favorite_vendors",
+            joinColumns = @JoinColumn(name = "user_id"),
+            inverseJoinColumns = @JoinColumn(name = "vendor_id")
+    )
     private Set<Vendor> favoriteVendors = new HashSet<>();
 
     @PrePersist
@@ -43,6 +47,8 @@ public class User {
 
     public String getRole() { return role; }
     public void setRole(String role) { this.role = role; }
+
+    public LocalDateTime getCreatedAt() { return createdAt; }
 
     public Set<Vendor> getFavoriteVendors() { return favoriteVendors; }
 }

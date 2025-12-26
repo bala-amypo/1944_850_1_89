@@ -7,25 +7,22 @@ import java.time.LocalDateTime;
 public class CategorizationRule {
 
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-
-    @ManyToOne
-    private Category category;
 
     private String keyword;
     private String matchType;
     private int priority;
+
+    @ManyToOne
+    private Category category;
+
     private LocalDateTime createdAt;
 
     @PrePersist
     public void prePersist() {
         createdAt = LocalDateTime.now();
     }
-
-    // getters & setters
-    public Category getCategory() { return category; }
-    public void setCategory(Category category) { this.category = category; }
 
     public String getKeyword() { return keyword; }
     public void setKeyword(String keyword) { this.keyword = keyword; }
@@ -35,4 +32,9 @@ public class CategorizationRule {
 
     public int getPriority() { return priority; }
     public void setPriority(int priority) { this.priority = priority; }
+
+    public Category getCategory() { return category; }
+    public void setCategory(Category category) { this.category = category; }
+
+    public LocalDateTime getCreatedAt() { return createdAt; }
 }
