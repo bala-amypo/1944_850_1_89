@@ -1,25 +1,68 @@
 package com.example.demo.util;
 
-import org.springframework.stereotype.Component;
+import com.example.demo.model.Category;
+import com.example.demo.model.CategorizationRule;
+import com.example.demo.model.Invoice;
 
-@Component
+import java.util.Comparator;
+import java.util.List;
+import java.util.regex.Pattern;
+
 public class InvoiceCategorizationEngine {
 
-    public String categorize(String description) {
+    /**
+     * Determines category based on rules.
+     * Rules are evaluated by priority (higher first).
+     */
+    public Category determineCategory(Invoice invoice,
+                                      List<CategorizationRule> rules) {
+
+        if (invoice == null || rules == null || rules.isEmpty()) {
+            return null;
+        }
+
+        String description = invoice.getDescription();
         if (description == null) {
-            return "Uncategorized";
+            return null;
         }
 
-        description = description.toLowerCase();
+        return rules.stream()
+                .sorted(Comparator.comparingInt(
+                        CategorizationRule::getPriority).reversed())
+                .filter(rule -> matches(rule, description))
+                .map(CategorizationRule::getCategory)
+                .findFirst()
+                .orElse(null);
+    }
 
-        if (description.contains("food")) {
-            return "Food";
-        } else if (description.contains("travel")) {
-            return "Travel";
-        } else if (description.contains("office")) {
-            return "Office";
+    // ---------------- PRIVATE HELPERS ----------------
+
+    private boolean matches(CategorizationRule rule, String description) {
+
+        if (rule.getKeyword() == null || rule.getMatchType() == null) {
+            return false;
         }
 
-        return "Others";
+        String keyword = rule.getKeyword();
+        String matchType = rule.getMatchType().toUpperCase();
+
+        switch (matchType) {
+
+            case "EXACT":
+                return description.equalsIgnoreCase(keyword);
+
+            case "CONTAINS":
+                return description.toLowerCase()
+                        .contains(keyword.toLowerCase());
+
+            case "REGEX":
+                return Pattern.compile(keyword,
+                        Pattern.CASE_INSENSITIVE)
+                        .matcher(description)
+                        .matches();
+
+            default:
+                return false;
+        }
     }
 }
