@@ -1,8 +1,8 @@
 package com.example.demo.service.impl;
 
-import com.example.demo.exception.ResourceNotFoundException;
-import com.example.demo.model.Invoice;
-import com.example.demo.model.User;
+import com.example.demo.model.Category;
+import com.example.demo.model.CategorizationRule;
+import com.example.demo.util.InvoiceCategorizationEngine;
 import com.example.demo.model.Vendor;
 import com.example.demo.repository.*;
 import com.example.demo.service.InvoiceService;
@@ -59,7 +59,6 @@ public class InvoiceServiceImpl implements InvoiceService {
     public Invoice categorizeInvoice(Long invoiceId) {
         Invoice invoice = getInvoice(invoiceId);
        InvoiceCategorizationEngine engine = new InvoiceCategorizationEngine();
-
 Category category = engine.determineCategory(invoice, rules);
 invoice.setCategory(category);
 
