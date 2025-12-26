@@ -1,44 +1,38 @@
-package com.example.demo.controller;
+package com.example.demo.dto;
 
-import com.example.demo.dto.AuthRequest;
-import com.example.demo.dto.AuthResponse;
-import com.example.demo.model.User;
-import com.example.demo.security.JwtUtil;
-import com.example.demo.service.UserService;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.web.bind.annotation.*;
+public class AuthRequest {
 
-@RestController
-@RequestMapping("/auth")
-public class AuthController {
+    private String email;
+    private String password;
+    private String role;
 
-    private final UserService userService;
-    private final JwtUtil jwtUtil;
-
-    public AuthController(UserService userService, JwtUtil jwtUtil) {
-        this.userService = userService;
-        this.jwtUtil = jwtUtil;
+    // ---------- NO-ARG CONSTRUCTOR ----------
+    public AuthRequest() {
     }
 
-    @PostMapping("/register")
-    public AuthResponse register(@RequestBody AuthRequest request) {
+    // ---------- GETTERS ----------
+    public String getEmail() {
+        return email;
+    }
 
-        User user = new User();
-        user.setEmail(request.getEmail());
-        user.setPassword(request.getPassword());
-        user.setRole(request.getRole());
+    public String getPassword() {
+        return password;
+    }
 
-        User saved = userService.registerUser(user);
+    public String getRole() {
+        return role;
+    }
 
-        UserDetails details = org.springframework.security.core.userdetails.User
-                .withUsername(saved.getEmail())
-                .password(saved.getPassword())
-                .roles(saved.getRole())
-                .build();
+    // ---------- SETTERS ----------
+    public void setEmail(String email) {
+        this.email = email;
+    }
 
-        String token = jwtUtil.generateToken(details, saved);
+    public void setPassword(String password) {
+        this.password = password;
+    }
 
-        return new AuthResponse(token, saved.getId(),
-                saved.getEmail(), saved.getRole());
+    public void setRole(String role) {
+        this.role = role;
     }
 }
