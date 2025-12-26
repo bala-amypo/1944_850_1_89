@@ -1,38 +1,57 @@
-package com.example.demo.dto;
+package com.example.demo.controller;
 
-public class AuthRequest {
+import com.example.demo.dto.AuthRequest;
+import com.example.demo.dto.AuthResponse;
+import com.example.demo.model.User;
+import com.example.demo.security.JwtUtil;
+import com.example.demo.service.UserService;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.web.bind.annotation.*;
 
-    private String email;
-    private String password;
-    private String role;
+@RestController
+@RequestMapping("/auth")
+public class AuthController {
 
-    // ---------- NO-ARG CONSTRUCTOR ----------
-    public AuthRequest() {
+    private final AuthenticationManager authenticationManager;
+    private final UserDetailsService userDetailsService;
+    private final JwtUtil jwtUtil;
+    private final UserService userService;
+
+    public AuthController(AuthenticationManager authenticationManager,
+                          UserDetailsService userDetailsService,
+                          JwtUtil jwtUtil,
+                          UserService userService) {
+        this.authenticationManager = authenticationManager;
+        this.userDetailsService = userDetailsService;
+        this.jwtUtil = jwtUtil;
+        this.userService = userService;
     }
 
-    // ---------- GETTERS ----------
-    public String getEmail() {
-        return email;
-    }
+    @PostMapping("/login")
+    public AuthResponse login(@RequestBody AuthRequest request) {
 
-    public String getPassword() {
-        return password;
-    }
+        authenticationManager.authenticate(
+                new UsernamePasswordAuthenticationToken(
+                        request.getEmail(),
+                        request.getPassword()
+                )
+        );
 
-    public String getRole() {
-        return role;
-    }
+        UserDetails userDetails =
+                userDetailsService.loadUserByUsername(request.getEmail());
 
-    // ---------- SETTERS ----------
-    public void setEmail(String email) {
-        this.email = email;
-    }
+        User user = userService.findByEmail(request.getEmail());
 
-    public void setPassword(String password) {
-        this.password = password;
-    }
+        String token = jwtUtil.generateToken(userDetails, user);
 
-    public void setRole(String role) {
-        this.role = role;
+        return new AuthResponse(
+                token,
+                user.getId(),
+                user.getEmail(),
+                user.getRole()
+        );
     }
 }
