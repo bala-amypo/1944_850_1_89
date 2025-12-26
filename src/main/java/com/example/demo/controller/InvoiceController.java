@@ -1,41 +1,44 @@
 package com.example.demo.controller;
 
 import com.example.demo.model.Invoice;
-import com.example.demo.service.InvoiceService;
+import com.example.demo.service.impl.InvoiceServiceImpl;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 @RestController
-@RequestMapping("/invoices")
+@RequestMapping("/api/invoices")
 public class InvoiceController {
 
-    private final InvoiceService invoiceService;
+    private final InvoiceServiceImpl invoiceService;
 
-    public InvoiceController(InvoiceService invoiceService) {
+    public InvoiceController(InvoiceServiceImpl invoiceService) {
         this.invoiceService = invoiceService;
     }
 
     @PostMapping("/{userId}/{vendorId}")
-    public Invoice uploadInvoice(@PathVariable Long userId,
-                                 @PathVariable Long vendorId,
-                                 @RequestBody Invoice invoice) {
+    public ResponseEntity<Invoice> uploadInvoice(
+            @PathVariable Long userId,
+            @PathVariable Long vendorId,
+            @RequestBody Invoice invoice) {
 
-        return invoiceService.uploadInvoice(userId, vendorId, invoice);
+        return ResponseEntity.ok(
+                invoiceService.uploadInvoice(userId, vendorId, invoice)
+        );
     }
 
     @GetMapping("/{id}")
-    public Invoice getInvoice(@PathVariable Long id) {
-        return invoiceService.getInvoice(id);
+    public ResponseEntity<Invoice> getInvoice(@PathVariable Long id) {
+        return ResponseEntity.ok(invoiceService.getInvoice(id));
     }
 
     @GetMapping("/user/{userId}")
-    public List<Invoice> getInvoicesByUser(@PathVariable Long userId) {
-        return invoiceService.getInvoicesByUser(userId);
-    }
+    public ResponseEntity<List<Invoice>> getInvoicesByUser(
+            @PathVariable Long userId) {
 
-    @GetMapping("/amount/{amount}")
-    public List<Invoice> getInvoicesAboveAmount(@PathVariable Double amount) {
-        return invoiceService.getInvoicesAboveAmount(amount);
+        return ResponseEntity.ok(
+                invoiceService.getInvoicesByUser(userId)
+        );
     }
 }
