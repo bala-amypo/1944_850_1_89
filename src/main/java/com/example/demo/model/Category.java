@@ -1,12 +1,26 @@
 package com.example.demo.model;
 
+import jakarta.persistence.*;
+import java.time.LocalDateTime;
+
+@Entity
 public class Category {
+
+    @Id
+    @GeneratedValue
     private Long id;
-    private String name;
 
-    public Long getId() { return id; }
-    public void setId(Long id) { this.id = id; }
+    private String categoryName;
+    private String description;
+    private LocalDateTime createdAt;
 
-    public String getName() { return name; }
-    public void setName(String name) { this.name = name; }
+    @PrePersist
+    public void prePersist() {
+        createdAt = LocalDateTime.now();
+    }
+
+    public String getCategoryName() { return categoryName; }
+    public void setCategoryName(String categoryName) { this.categoryName = categoryName; }
+
+    public LocalDateTime getCreatedAt() { return createdAt; }
 }
