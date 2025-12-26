@@ -1,18 +1,31 @@
 package com.example.demo.util;
 
+import com.example.demo.model.Invoice;
+import com.example.demo.model.CategorizationRule;
+
+import java.util.List;
+
 public class InvoiceCategorizationEngine {
 
-    public static String categorize(String description) {
-        if (description == null) return "UNKNOWN";
+    public String determineCategory(Invoice invoice,
+                                    List<CategorizationRule> rules) {
+
+        if (invoice == null || rules == null || rules.isEmpty()) {
+            return "UNCATEGORIZED";
+        }
+
+        String description = invoice.getDescription();
+        if (description == null) {
+            return "UNCATEGORIZED";
+        }
 
         description = description.toLowerCase();
 
-        if (description.contains("food") || description.contains("restaurant"))
-            return "FOOD";
-        if (description.contains("taxi") || description.contains("uber"))
-            return "TRANSPORT";
-        if (description.contains("rent"))
-            return "HOUSING";
+        for (CategorizationRule rule : rules) {
+            if (description.contains(rule.getKeyword().toLowerCase())) {
+                return rule.getCategory();
+            }
+        }
 
         return "OTHER";
     }
