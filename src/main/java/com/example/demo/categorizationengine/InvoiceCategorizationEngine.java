@@ -7,18 +7,16 @@ import org.springframework.stereotype.Component;
 import java.util.List;
 import java.util.Comparator;
 
-@Component // This allows Spring to find and inject this "bean"
+@Component
 public class InvoiceCategorizationEngine {
 
-    /**
-     * Determines the category for an invoice based on its description and provided rules.
-     * Rules are processed based on priority (highest first).
-     */
+    // Step 0 Requirement: Method must be public Category determineCategory(Invoice invoice, List<CategorizationRule> rules)
     public Category determineCategory(Invoice invoice, List<CategorizationRule> rules) {
         if (rules == null || rules.isEmpty() || invoice.getDescription() == null) {
             return null;
         }
 
+        // Apply logic for EXACT, CONTAINS, and REGEX matching in priority order
         return rules.stream()
                 .sorted(Comparator.comparingInt(CategorizationRule::getPriority).reversed())
                 .filter(rule -> matches(invoice.getDescription(), rule))
