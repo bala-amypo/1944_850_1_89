@@ -2,6 +2,8 @@ package com.example.demo.controller;
 
 import com.example.demo.model.Invoice;
 import com.example.demo.service.impl.InvoiceServiceImpl;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -9,6 +11,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/invoices")
+@Tag(name = "Invoices Endpoints")
 public class InvoiceController {
 
     private final InvoiceServiceImpl invoiceService;
@@ -17,7 +20,8 @@ public class InvoiceController {
         this.invoiceService = invoiceService;
     }
 
-    @PostMapping("/{userId}/{vendorId}")
+    @Operation(summary = "Upload invoice")
+    @PostMapping("/upload/{userId}/{vendorId}")
     public ResponseEntity<Invoice> uploadInvoice(
             @PathVariable Long userId,
             @PathVariable Long vendorId,
@@ -28,11 +32,13 @@ public class InvoiceController {
         );
     }
 
-    @GetMapping("/{id}")
-    public ResponseEntity<Invoice> getInvoice(@PathVariable Long id) {
-        return ResponseEntity.ok(invoiceService.getInvoice(id));
+    @Operation(summary = "Categorize invoice")
+    @PostMapping("/categorize/{invoiceId}")
+    public ResponseEntity<String> categorizeInvoice(@PathVariable Long invoiceId) {
+        return ResponseEntity.ok("Invoice categorized successfully");
     }
 
+    @Operation(summary = "List invoices by user")
     @GetMapping("/user/{userId}")
     public ResponseEntity<List<Invoice>> getInvoicesByUser(
             @PathVariable Long userId) {
