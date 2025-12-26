@@ -6,9 +6,13 @@ import java.util.List;
 
 public interface CategorizationRuleService {
 
-    CategorizationRule createRule(CategorizationRule rule);
+    CategorizationRule createRule(Long categoryId, CategorizationRule rule);
+
+    CategorizationRule updateRule(Long ruleId, CategorizationRule rule);
+
+    CategorizationRule getRuleById(Long ruleId);
 
     List<CategorizationRule> getAllRules();
 
-    List<CategorizationRule> findMatchingRules(String description);
+    void deleteRule(Long ruleId);
 }

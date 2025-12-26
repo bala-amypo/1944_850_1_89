@@ -1,18 +1,13 @@
-package com.example.demo.servlet;
+package com.example.demo.service;
 
-import jakarta.servlet.annotation.WebServlet;
-import jakarta.servlet.http.HttpServlet;
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
+import com.example.demo.model.Vendor;
+import java.util.List;
 
-import java.io.IOException;
+public interface VendorService {
 
-@WebServlet(urlPatterns = "/hello")
-public class HelloServlet extends HttpServlet {
+    Vendor createVendor(Vendor vendor);
 
-    @Override
-    protected void doGet(HttpServletRequest req, HttpServletResponse resp)
-            throws IOException {
-        resp.getWriter().write("Hello Servlet");
-    }
+    Vendor getVendor(Long vendorId);
+
+    List<Vendor> getAllVendors();
 }
