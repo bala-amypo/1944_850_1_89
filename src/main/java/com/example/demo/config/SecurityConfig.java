@@ -10,16 +10,16 @@ import org.springframework.security.web.SecurityFilterChain;
 @Configuration
 public class SecurityConfig {
 
-    // 1️⃣ Security filter chain
+    // This bean defines your security rules
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
-            .csrf().disable() // disable CSRF for simplicity
-            .authorizeHttpRequests(auth -> auth.anyRequest().permitAll()); // allow all requests
+            .csrf().disable() // Disable CSRF for now to avoid issues
+            .authorizeHttpRequests(auth -> auth.anyRequest().permitAll()); // Allow all requests
         return http.build();
     }
 
-    // 2️⃣ Password encoder bean
+    // This bean is required by Spring Security for password encoding
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
