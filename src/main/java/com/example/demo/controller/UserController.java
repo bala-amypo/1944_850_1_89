@@ -1,9 +1,7 @@
 package com.example.demo.controller;
 
 import com.example.demo.model.User;
-import com.example.demo.repository.UserRepository;
-import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.tags.Tag;
+import com.example.demo.service.UserService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -11,30 +9,48 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/users")
-@Tag(name = "Users Endpoints")
 public class UserController {
 
-    private final UserRepository userRepository;
+    private final UserService userService;
 
-    public UserController(UserRepository userRepository) {
-        this.userRepository = userRepository;
+    public UserController(UserService userService) {
+        this.userService = userService;
     }
 
-    @Operation(summary = "Register user")
-    @PostMapping("/register")
-    public ResponseEntity<User> register(@RequestBody User user) {
-        return ResponseEntity.ok(userRepository.save(user));
+    // ✅ Create / Register User
+    @PostMapping
+    public ResponseEntity<User> createUser(@RequestBody User user) {
+        User savedUser = userService.registerUser(user);
+        return ResponseEntity.ok(savedUser);
     }
 
-    @Operation(summary = "List all users")
-    @GetMapping("/all")
-    public ResponseEntity<List<User>> getAllUsers() {
-        return ResponseEntity.ok(userRepository.findAll());
-    }
-
-    @Operation(summary = "Get user by id")
+    // ✅ Get user by ID
     @GetMapping("/{id}")
-    public ResponseEntity<User> getUser(@PathVariable Long id) {
-        return ResponseEntity.of(userRepository.findById(id));
+    public ResponseEntity<User> getUserById(@PathVariable Long id) {
+        User user = userService.getUserById(id);
+        return ResponseEntity.ok(user);
+    }
+
+    // ✅ Get all users
+    @GetMapping
+    public ResponseEntity<List<User>> getAllUsers() {
+        return ResponseEntity.ok(userService.getAllUsers());
+    }
+
+    // ✅ Update user
+    @PutMapping("/{id}")
+    public ResponseEntity<User> updateUser(
+            @PathVariable Long id,
+            @RequestBody User user
+    ) {
+        User updatedUser = userService.updateUser(id, user);
+        return ResponseEntity.ok(updatedUser);
+    }
+
+    // ✅ Delete user
+    @DeleteMapping("/{id}")
+    public ResponseEntity<String> deleteUser(@PathVariable Long id) {
+        userService.deleteUser(id);
+        return ResponseEntity.ok("User deleted successfully");
     }
 }
