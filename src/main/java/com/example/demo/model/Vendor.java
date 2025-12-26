@@ -1,10 +1,12 @@
 package com.example.demo.model;
 
 import jakarta.persistence.*;
+import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.Set;
 
 @Entity
+@Table(name = "vendors")
 public class Vendor {
 
     @Id
@@ -13,8 +15,15 @@ public class Vendor {
 
     private String vendorName;
 
+    private LocalDateTime createdAt;
+
     @ManyToMany(mappedBy = "favoriteVendors")
     private Set<User> users = new HashSet<>();
+
+    @PrePersist
+    public void prePersist() {
+        createdAt = LocalDateTime.now();
+    }
 
     public Long getId() { return id; }
     public void setId(Long id) { this.id = id; }
