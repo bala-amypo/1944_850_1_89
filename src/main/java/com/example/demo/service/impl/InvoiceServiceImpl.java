@@ -58,7 +58,11 @@ public class InvoiceServiceImpl implements InvoiceService {
     @Override
     public Invoice categorizeInvoice(Long invoiceId) {
         Invoice invoice = getInvoice(invoiceId);
-        invoice.setCategory(engine.determineCategory(invoice, ruleRepository.findAll()));
+       InvoiceCategorizationEngine engine = new InvoiceCategorizationEngine();
+
+Category category = engine.determineCategory(invoice, rules);
+invoice.setCategory(category);
+
         return invoiceRepository.save(invoice);
     }
 }
