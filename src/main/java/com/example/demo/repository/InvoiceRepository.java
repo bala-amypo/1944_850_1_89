@@ -9,9 +9,5 @@ import java.util.List;
 
 @Repository
 public interface InvoiceRepository extends JpaRepository<Invoice, Long> {
-
-    // This is the method causing the error
     List<Invoice> findByUploadedBy(User uploadedBy);
-
-    // Optional: you can add more query methods here if needed
 }
