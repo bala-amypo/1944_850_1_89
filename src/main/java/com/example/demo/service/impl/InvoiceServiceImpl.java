@@ -45,7 +45,6 @@ public class InvoiceServiceImpl implements InvoiceService {
 
         invoice.setVendor(vendor);
 
-        // Apply categorization rules
         List<CategorizationRule> rules = ruleRepository.findAll();
         String categoryName = engine.determineCategory(invoice, rules);
 
