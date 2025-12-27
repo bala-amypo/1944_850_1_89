@@ -122,6 +122,7 @@ public class CategorizationRuleServiceImpl implements CategorizationRuleService 
         ruleRepository.deleteById(ruleId);
     }
 
+    // ✅ THIS MUST MATCH THE INTERFACE
     @Override
     public Category categorize(String description) {
         if (description == null || description.isEmpty()) return null;
