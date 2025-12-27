@@ -125,33 +125,48 @@ public class CategorizationRuleServiceImpl implements CategorizationRuleService 
         ruleRepository.deleteById(ruleId);
     }
 
-    // ✅ RULE ENGINE LOGIC (NO @Override)
+    // ✅ Fixed categorize method
+    @Override
     public Category categorize(String description) {
-
-        List<CategorizationRule> rules = ruleRepository.findAll();
-
-        if (rules == null || rules.isEmpty() || description == null) {
+        if (description == null || description.trim().isEmpty()) {
             return null;
         }
 
-        for (CategorizationRule rule : rules) {
+        List<CategorizationRule> rules = ruleRepository.findAll();
 
-            // REGEX match (substring)
-            if ("REGEX".equalsIgnoreCase(rule.getMatchType())) {
-                Pattern pattern = Pattern.compile(rule.getKeyword(), Pattern.CASE_INSENSITIVE);
-                if (pattern.matcher(description).find()) {
-                    return rule.getCategory();
-                }
+        if (rules == null || rules.isEmpty()) {
+            return null;
+        }
+
+        // Optional: sort by priority if your rules have priorities
+        rules.sort((r1, r2) -> Integer.compare(r2.getPriority(), r1.getPriority()));
+
+        for (CategorizationRule rule : rules) {
+            if (rule.getKeyword() == null || rule.getMatchType() == null || rule.getCategory() == null) {
+                continue; // skip incomplete rules
             }
 
-            // EXACT match
-            if ("EXACT".equalsIgnoreCase(rule.getMatchType())) {
-                if (description.equalsIgnoreCase(rule.getKeyword())) {
-                    return rule.getCategory();
-                }
+            switch (rule.getMatchType().toUpperCase()) {
+                case "REGEX":
+                    Pattern pattern = Pattern.compile(rule.getKeyword(), Pattern.CASE_INSENSITIVE);
+                    if (pattern.matcher(description).find()) {
+                        return rule.getCategory();
+                    }
+                    break;
+
+                case "EXACT":
+                    if (description.equalsIgnoreCase(rule.getKeyword())) {
+                        return rule.getCategory();
+                    }
+                    break;
+
+                default:
+                    // unknown match type, skip
             }
         }
 
+        // If nothing matched, optionally return a default category instead of null
+        // For now, return null (or you can create a "Uncategorized" category in DB)
         return null;
     }
 }
