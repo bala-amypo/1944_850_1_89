@@ -130,10 +130,12 @@ public class CategorizationRuleServiceImpl implements CategorizationRuleService 
         List<CategorizationRule> rules = ruleRepository.findAll();
         if (rules == null || rules.isEmpty()) return null;
 
+        // Sort by priority descending
         rules.sort((r1, r2) -> Integer.compare(r2.getPriority(), r1.getPriority()));
 
         for (CategorizationRule rule : rules) {
-            if (rule.getKeyword() == null || rule.getMatchType() == null || rule.getCategory() == null) continue;
+            if (rule.getKeyword() == null || rule.getMatchType() == null || rule.getCategory() == null)
+                continue;
 
             if ("REGEX".equalsIgnoreCase(rule.getMatchType())) {
                 if (Pattern.compile(rule.getKeyword(), Pattern.CASE_INSENSITIVE)
