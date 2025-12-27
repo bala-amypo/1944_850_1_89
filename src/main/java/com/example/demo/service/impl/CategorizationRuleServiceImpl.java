@@ -124,40 +124,36 @@ public class CategorizationRuleServiceImpl implements CategorizationRuleService 
 
     // Fixed categorize method
     public Category categorize(String description) {
-        if (description == null || description.isEmpty()) return null;
+    if (description == null || description.trim().isEmpty()) return null;
 
-        List<CategorizationRule> rules = ruleRepository.findAll();
-        if (rules == null || rules.isEmpty()) return null;
+    List<CategorizationRule> rules = ruleRepository.findAll();
+    if (rules == null || rules.isEmpty()) return null;
 
-        // Sort rules by priority descending
-        rules.sort((r1, r2) -> Integer.compare(r2.getPriority(), r1.getPriority()));
+    rules.sort((r1, r2) -> Integer.compare(r2.getPriority(), r1.getPriority()));
 
-        for (CategorizationRule rule : rules) {
-            if (rule == null || rule.getKeyword() == null || rule.getMatchType() == null || rule.getCategory() == null)
-                continue;
+    String desc = description.trim();
 
-            String keyword = rule.getKeyword().trim();
-            String matchType = rule.getMatchType().trim();
+    for (CategorizationRule rule : rules) {
+        if (rule == null || rule.getKeyword() == null || rule.getMatchType() == null || rule.getCategory() == null)
+            continue;
 
-            // REGEX match
-            if ("REGEX".equalsIgnoreCase(matchType)) {
-                try {
-                    if (Pattern.compile(keyword, Pattern.CASE_INSENSITIVE).matcher(description).find()) {
-                        return rule.getCategory();
-                    }
-                } catch (Exception e) {
-                    // skip invalid regex
-                    continue;
-                }
-            }
-            // EXACT match
-            else if ("EXACT".equalsIgnoreCase(matchType)) {
-                if (description.equalsIgnoreCase(keyword)) {
+        String keyword = rule.getKeyword().trim();
+        String matchType = rule.getMatchType().trim();
+
+        if ("REGEX".equalsIgnoreCase(matchType)) {
+            try {
+                if (Pattern.compile(keyword, Pattern.CASE_INSENSITIVE).matcher(desc).find()) {
                     return rule.getCategory();
                 }
+            } catch (Exception e) {
+                continue;
+            }
+        } else if ("EXACT".equalsIgnoreCase(matchType)) {
+            if (desc.equalsIgnoreCase(keyword)) {
+                return rule.getCategory();
             }
         }
-
-        return null;
     }
+
+    return null;
 }
