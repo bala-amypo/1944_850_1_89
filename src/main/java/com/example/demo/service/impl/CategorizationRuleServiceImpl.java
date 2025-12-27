@@ -125,33 +125,28 @@ public class CategorizationRuleServiceImpl implements CategorizationRuleService 
 
     @Override
     public Category categorize(String description) {
-        if (description == null || description.trim().isEmpty()) return null;
+        if (description == null || description.isEmpty()) return null;
 
         List<CategorizationRule> rules = ruleRepository.findAll();
         if (rules == null || rules.isEmpty()) return null;
 
-        // Sort by priority descending
         rules.sort((r1, r2) -> Integer.compare(r2.getPriority(), r1.getPriority()));
 
         for (CategorizationRule rule : rules) {
-            if (rule.getKeyword() == null || rule.getMatchType() == null || rule.getCategory() == null) {
-                continue;
-            }
+            if (rule.getKeyword() == null || rule.getMatchType() == null || rule.getCategory() == null) continue;
 
-            switch (rule.getMatchType().toUpperCase()) {
-                case "REGEX":
-                    if (Pattern.compile(rule.getKeyword(), Pattern.CASE_INSENSITIVE)
-                            .matcher(description).find()) {
-                        return rule.getCategory();
-                    }
-                    break;
-                case "EXACT":
-                    if (description.equalsIgnoreCase(rule.getKeyword())) {
-                        return rule.getCategory();
-                    }
-                    break;
+            if ("REGEX".equalsIgnoreCase(rule.getMatchType())) {
+                if (Pattern.compile(rule.getKeyword(), Pattern.CASE_INSENSITIVE)
+                        .matcher(description).find()) {
+                    return rule.getCategory();
+                }
+            } else if ("EXACT".equalsIgnoreCase(rule.getMatchType())) {
+                if (description.equalsIgnoreCase(rule.getKeyword())) {
+                    return rule.getCategory();
+                }
             }
         }
+
         return null;
     }
 }
