@@ -81,9 +81,8 @@ public class CategorizationRuleServiceImpl implements CategorizationRuleService 
     private final CategorizationRuleRepository ruleRepository;
     private final CategoryRepository categoryRepository;
 
-    public CategorizationRuleServiceImpl(
-            CategorizationRuleRepository ruleRepository,
-            CategoryRepository categoryRepository) {
+    public CategorizationRuleServiceImpl(CategorizationRuleRepository ruleRepository,
+                                         CategoryRepository categoryRepository) {
         this.ruleRepository = ruleRepository;
         this.categoryRepository = categoryRepository;
     }
@@ -122,7 +121,7 @@ public class CategorizationRuleServiceImpl implements CategorizationRuleService 
         ruleRepository.deleteById(ruleId);
     }
 
-    // Safe categorize method
+    // ✅ Corrected categorize method
     @Override
     public Category categorize(String description) {
         if (description == null || description.trim().isEmpty()) return null;
@@ -132,8 +131,6 @@ public class CategorizationRuleServiceImpl implements CategorizationRuleService 
 
         // Sort by priority descending
         rules.sort((r1, r2) -> Integer.compare(r2.getPriority(), r1.getPriority()));
-
-        String desc = description.trim();
 
         for (CategorizationRule rule : rules) {
             if (rule == null || rule.getKeyword() == null || rule.getMatchType() == null || rule.getCategory() == null)
@@ -145,21 +142,24 @@ public class CategorizationRuleServiceImpl implements CategorizationRuleService 
             // REGEX match
             if ("REGEX".equalsIgnoreCase(matchType)) {
                 try {
-                    if (Pattern.compile(keyword, Pattern.CASE_INSENSITIVE).matcher(desc).find()) {
+                    if (Pattern.compile(keyword, Pattern.CASE_INSENSITIVE)
+                            .matcher(description).find()) {
                         return rule.getCategory();
                     }
                 } catch (Exception e) {
+                    // invalid regex → skip
                     continue;
                 }
             }
             // EXACT match
             else if ("EXACT".equalsIgnoreCase(matchType)) {
-                if (desc.equalsIgnoreCase(keyword)) {
+                if (description.equalsIgnoreCase(keyword)) {
                     return rule.getCategory();
                 }
             }
         }
 
+        // If no match, return null
         return null;
     }
-} // <-- This closing brace was missing in your file
+}
