@@ -125,8 +125,7 @@ public class CategorizationRuleServiceImpl implements CategorizationRuleService 
         ruleRepository.deleteById(ruleId);
     }
 
-    // ✅ RULE ENGINE LOGIC — THIS FIXES testEngineRegexMatchRule
-    @Override
+    // ✅ RULE ENGINE LOGIC (NO @Override)
     public Category categorize(String description) {
 
         List<CategorizationRule> rules = ruleRepository.findAll();
@@ -137,7 +136,7 @@ public class CategorizationRuleServiceImpl implements CategorizationRuleService 
 
         for (CategorizationRule rule : rules) {
 
-            // REGEX MATCH (substring match)
+            // REGEX match (substring)
             if ("REGEX".equalsIgnoreCase(rule.getMatchType())) {
                 Pattern pattern = Pattern.compile(rule.getKeyword(), Pattern.CASE_INSENSITIVE);
                 if (pattern.matcher(description).find()) {
@@ -145,7 +144,7 @@ public class CategorizationRuleServiceImpl implements CategorizationRuleService 
                 }
             }
 
-            // EXACT MATCH
+            // EXACT match
             if ("EXACT".equalsIgnoreCase(rule.getMatchType())) {
                 if (description.equalsIgnoreCase(rule.getKeyword())) {
                     return rule.getCategory();
