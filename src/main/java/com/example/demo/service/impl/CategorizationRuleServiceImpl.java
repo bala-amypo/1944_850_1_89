@@ -122,28 +122,37 @@ public class CategorizationRuleServiceImpl implements CategorizationRuleService 
         ruleRepository.deleteById(ruleId);
     }
 
-    // ✅ THIS MUST MATCH THE INTERFACE
-    @Override
+    // Fixed categorize method
     public Category categorize(String description) {
         if (description == null || description.isEmpty()) return null;
 
         List<CategorizationRule> rules = ruleRepository.findAll();
         if (rules == null || rules.isEmpty()) return null;
 
-        // Sort by priority descending
+        // Sort rules by priority descending
         rules.sort((r1, r2) -> Integer.compare(r2.getPriority(), r1.getPriority()));
 
         for (CategorizationRule rule : rules) {
-            if (rule.getKeyword() == null || rule.getMatchType() == null || rule.getCategory() == null)
+            if (rule == null || rule.getKeyword() == null || rule.getMatchType() == null || rule.getCategory() == null)
                 continue;
 
-            if ("REGEX".equalsIgnoreCase(rule.getMatchType())) {
-                if (Pattern.compile(rule.getKeyword(), Pattern.CASE_INSENSITIVE)
-                        .matcher(description).find()) {
-                    return rule.getCategory();
+            String keyword = rule.getKeyword().trim();
+            String matchType = rule.getMatchType().trim();
+
+            // REGEX match
+            if ("REGEX".equalsIgnoreCase(matchType)) {
+                try {
+                    if (Pattern.compile(keyword, Pattern.CASE_INSENSITIVE).matcher(description).find()) {
+                        return rule.getCategory();
+                    }
+                } catch (Exception e) {
+                    // skip invalid regex
+                    continue;
                 }
-            } else if ("EXACT".equalsIgnoreCase(rule.getMatchType())) {
-                if (description.equalsIgnoreCase(rule.getKeyword())) {
+            }
+            // EXACT match
+            else if ("EXACT".equalsIgnoreCase(matchType)) {
+                if (description.equalsIgnoreCase(keyword)) {
                     return rule.getCategory();
                 }
             }
