@@ -122,38 +122,44 @@ public class CategorizationRuleServiceImpl implements CategorizationRuleService 
         ruleRepository.deleteById(ruleId);
     }
 
-    // Fixed categorize method
+    // Safe categorize method
+    @Override
     public Category categorize(String description) {
-    if (description == null || description.trim().isEmpty()) return null;
+        if (description == null || description.trim().isEmpty()) return null;
 
-    List<CategorizationRule> rules = ruleRepository.findAll();
-    if (rules == null || rules.isEmpty()) return null;
+        List<CategorizationRule> rules = ruleRepository.findAll();
+        if (rules == null || rules.isEmpty()) return null;
 
-    rules.sort((r1, r2) -> Integer.compare(r2.getPriority(), r1.getPriority()));
+        // Sort by priority descending
+        rules.sort((r1, r2) -> Integer.compare(r2.getPriority(), r1.getPriority()));
 
-    String desc = description.trim();
+        String desc = description.trim();
 
-    for (CategorizationRule rule : rules) {
-        if (rule == null || rule.getKeyword() == null || rule.getMatchType() == null || rule.getCategory() == null)
-            continue;
+        for (CategorizationRule rule : rules) {
+            if (rule == null || rule.getKeyword() == null || rule.getMatchType() == null || rule.getCategory() == null)
+                continue;
 
-        String keyword = rule.getKeyword().trim();
-        String matchType = rule.getMatchType().trim();
+            String keyword = rule.getKeyword().trim();
+            String matchType = rule.getMatchType().trim();
 
-        if ("REGEX".equalsIgnoreCase(matchType)) {
-            try {
-                if (Pattern.compile(keyword, Pattern.CASE_INSENSITIVE).matcher(desc).find()) {
+            // REGEX match
+            if ("REGEX".equalsIgnoreCase(matchType)) {
+                try {
+                    if (Pattern.compile(keyword, Pattern.CASE_INSENSITIVE).matcher(desc).find()) {
+                        return rule.getCategory();
+                    }
+                } catch (Exception e) {
+                    continue;
+                }
+            }
+            // EXACT match
+            else if ("EXACT".equalsIgnoreCase(matchType)) {
+                if (desc.equalsIgnoreCase(keyword)) {
                     return rule.getCategory();
                 }
-            } catch (Exception e) {
-                continue;
-            }
-        } else if ("EXACT".equalsIgnoreCase(matchType)) {
-            if (desc.equalsIgnoreCase(keyword)) {
-                return rule.getCategory();
             }
         }
-    }
 
-    return null;
-}
+        return null;
+    }
+} // <-- This closing brace was missing in your file
