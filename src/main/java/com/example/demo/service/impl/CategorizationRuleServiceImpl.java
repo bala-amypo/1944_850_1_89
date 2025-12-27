@@ -71,6 +71,7 @@ import com.example.demo.repository.CategorizationRuleRepository;
 import com.example.demo.repository.CategoryRepository;
 import com.example.demo.service.CategorizationRuleService;
 import org.springframework.stereotype.Service;
+
 import java.util.List;
 import java.util.regex.Pattern;
 
@@ -99,11 +100,9 @@ public class CategorizationRuleServiceImpl implements CategorizationRuleService 
     public CategorizationRule updateRule(Long ruleId, CategorizationRule rule) {
         CategorizationRule existing = ruleRepository.findById(ruleId)
                 .orElseThrow(() -> new ResourceNotFoundException("Rule not found"));
-
         existing.setKeyword(rule.getKeyword());
         existing.setMatchType(rule.getMatchType());
         existing.setPriority(rule.getPriority());
-
         return ruleRepository.save(existing);
     }
 
