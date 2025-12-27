@@ -133,17 +133,18 @@ public class CategorizationRuleServiceImpl implements CategorizationRuleService 
         }
 
         List<CategorizationRule> rules = ruleRepository.findAll();
-
         if (rules == null || rules.isEmpty()) {
             return null;
         }
 
-        // Optional: sort by priority if your rules have priorities
+        // Sort by priority (highest first)
         rules.sort((r1, r2) -> Integer.compare(r2.getPriority(), r1.getPriority()));
 
         for (CategorizationRule rule : rules) {
+
+            // Skip rules with missing data
             if (rule.getKeyword() == null || rule.getMatchType() == null || rule.getCategory() == null) {
-                continue; // skip incomplete rules
+                continue;
             }
 
             switch (rule.getMatchType().toUpperCase()) {
@@ -165,8 +166,7 @@ public class CategorizationRuleServiceImpl implements CategorizationRuleService 
             }
         }
 
-        // If nothing matched, optionally return a default category instead of null
-        // For now, return null (or you can create a "Uncategorized" category in DB)
+        // Nothing matched — return null
         return null;
     }
 }
