@@ -71,7 +71,6 @@ import com.example.demo.repository.CategorizationRuleRepository;
 import com.example.demo.repository.CategoryRepository;
 import com.example.demo.service.CategorizationRuleService;
 import org.springframework.stereotype.Service;
-
 import java.util.List;
 import java.util.regex.Pattern;
 
@@ -92,7 +91,6 @@ public class CategorizationRuleServiceImpl implements CategorizationRuleService 
     public CategorizationRule createRule(Long categoryId, CategorizationRule rule) {
         Category category = categoryRepository.findById(categoryId)
                 .orElseThrow(() -> new ResourceNotFoundException("Category not found"));
-
         rule.setCategory(category);
         return ruleRepository.save(rule);
     }
@@ -127,16 +125,12 @@ public class CategorizationRuleServiceImpl implements CategorizationRuleService 
 
     @Override
     public Category categorize(String description) {
-        if (description == null || description.trim().isEmpty()) {
-            return null;
-        }
+        if (description == null || description.trim().isEmpty()) return null;
 
         List<CategorizationRule> rules = ruleRepository.findAll();
-        if (rules == null || rules.isEmpty()) {
-            return null;
-        }
+        if (rules == null || rules.isEmpty()) return null;
 
-        // sort by priority
+        // Sort by priority descending
         rules.sort((r1, r2) -> Integer.compare(r2.getPriority(), r1.getPriority()));
 
         for (CategorizationRule rule : rules) {
@@ -144,18 +138,20 @@ public class CategorizationRuleServiceImpl implements CategorizationRuleService 
                 continue;
             }
 
-            if ("REGEX".equalsIgnoreCase(rule.getMatchType())) {
-                if (Pattern.compile(rule.getKeyword(), Pattern.CASE_INSENSITIVE)
-                        .matcher(description).find()) {
-                    return rule.getCategory();
-                }
-            } else if ("EXACT".equalsIgnoreCase(rule.getMatchType())) {
-                if (description.equalsIgnoreCase(rule.getKeyword())) {
-                    return rule.getCategory();
-                }
+            switch (rule.getMatchType().toUpperCase()) {
+                case "REGEX":
+                    if (Pattern.compile(rule.getKeyword(), Pattern.CASE_INSENSITIVE)
+                            .matcher(description).find()) {
+                        return rule.getCategory();
+                    }
+                    break;
+                case "EXACT":
+                    if (description.equalsIgnoreCase(rule.getKeyword())) {
+                        return rule.getCategory();
+                    }
+                    break;
             }
         }
-
         return null;
     }
 }
