@@ -125,7 +125,6 @@ public class CategorizationRuleServiceImpl implements CategorizationRuleService 
         ruleRepository.deleteById(ruleId);
     }
 
-    // ✅ Fixed categorize method
     @Override
     public Category categorize(String description) {
         if (description == null || description.trim().isEmpty()) {
@@ -137,36 +136,26 @@ public class CategorizationRuleServiceImpl implements CategorizationRuleService 
             return null;
         }
 
-        // Sort by priority (highest first)
+        // sort by priority
         rules.sort((r1, r2) -> Integer.compare(r2.getPriority(), r1.getPriority()));
 
         for (CategorizationRule rule : rules) {
-
-            // Skip rules with missing data
             if (rule.getKeyword() == null || rule.getMatchType() == null || rule.getCategory() == null) {
                 continue;
             }
 
-            switch (rule.getMatchType().toUpperCase()) {
-                case "REGEX":
-                    Pattern pattern = Pattern.compile(rule.getKeyword(), Pattern.CASE_INSENSITIVE);
-                    if (pattern.matcher(description).find()) {
-                        return rule.getCategory();
-                    }
-                    break;
-
-                case "EXACT":
-                    if (description.equalsIgnoreCase(rule.getKeyword())) {
-                        return rule.getCategory();
-                    }
-                    break;
-
-                default:
-                    // unknown match type, skip
+            if ("REGEX".equalsIgnoreCase(rule.getMatchType())) {
+                if (Pattern.compile(rule.getKeyword(), Pattern.CASE_INSENSITIVE)
+                        .matcher(description).find()) {
+                    return rule.getCategory();
+                }
+            } else if ("EXACT".equalsIgnoreCase(rule.getMatchType())) {
+                if (description.equalsIgnoreCase(rule.getKeyword())) {
+                    return rule.getCategory();
+                }
             }
         }
 
-        // Nothing matched — return null
         return null;
     }
-}
+} // ✅ Make sure this final brace closes the class
