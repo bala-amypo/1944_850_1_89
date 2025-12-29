@@ -33,9 +33,8 @@
 package com.example.demo.util;
 
 import com.example.demo.model.Category;
-import com.example.demo.model.Rule;
-import com.example.demo.repository.CategoryRepository;
-import com.example.demo.repository.RuleRepository;
+import com.example.demo.model.CategorizationRule;
+import com.example.demo.model.Invoice;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
@@ -45,54 +44,44 @@ import java.util.regex.Pattern;
 @Component
 public class InvoiceCategorizationEngine {
 
-    private final RuleRepository ruleRepository;
-    private final CategoryRepository categoryRepository;
-
-    public InvoiceCategorizationEngine(RuleRepository ruleRepository,
-                                       CategoryRepository categoryRepository) {
-        this.ruleRepository = ruleRepository;
-        this.categoryRepository = categoryRepository;
-    }
-
     /**
-     * Categorize invoice based on description
+     * Determines category for an invoice using rules
      */
-    public Category categorize(String description) {
+    public Category determineCategory(Invoice invoice,
+                                      List<CategorizationRule> rules) {
 
-        if (description == null || description.isBlank()) {
-            return getDefaultCategory();
+        if (invoice == null || invoice.getDescription() == null || rules == null) {
+            return createDefaultCategory();
         }
 
-        String normalizedDescription = description.toLowerCase();
-
-        List<Rule> rules = ruleRepository.findAll();
+        String description = invoice.getDescription().toLowerCase();
 
         // 1️⃣ EXACT MATCH
-        for (Rule rule : rules) {
+        for (CategorizationRule rule : rules) {
             if ("EXACT".equalsIgnoreCase(rule.getRuleType())) {
-                if (normalizedDescription.equals(rule.getPattern().toLowerCase())) {
+                if (description.equals(rule.getPattern().toLowerCase())) {
                     return rule.getCategory();
                 }
             }
         }
 
         // 2️⃣ CONTAINS MATCH
-        for (Rule rule : rules) {
+        for (CategorizationRule rule : rules) {
             if ("CONTAINS".equalsIgnoreCase(rule.getRuleType())) {
-                if (normalizedDescription.contains(rule.getPattern().toLowerCase())) {
+                if (description.contains(rule.getPattern().toLowerCase())) {
                     return rule.getCategory();
                 }
             }
         }
 
-        // 3️⃣ REGEX MATCH (🔥 FIXED LOGIC)
-        for (Rule rule : rules) {
+        // 3️⃣ REGEX MATCH (🔥 FIXED)
+        for (CategorizationRule rule : rules) {
             if ("REGEX".equalsIgnoreCase(rule.getRuleType())) {
                 Pattern pattern = Pattern.compile(
                         rule.getPattern(),
                         Pattern.CASE_INSENSITIVE
                 );
-                Matcher matcher = pattern.matcher(normalizedDescription);
+                Matcher matcher = pattern.matcher(description);
 
                 if (matcher.find()) {
                     return rule.getCategory();
@@ -100,20 +89,17 @@ public class InvoiceCategorizationEngine {
             }
         }
 
-        // 4️⃣ FALLBACK (NEVER RETURN NULL)
-        return getDefaultCategory();
+        // 4️⃣ FALLBACK — NEVER RETURN NULL
+        return createDefaultCategory();
     }
 
     /**
-     * Returns default category (Uncategorized)
+     * Default category for unmatched invoices
      */
-    private Category getDefaultCategory() {
-        return categoryRepository
-                .findByCategoryName("Uncategorized")
-                .orElseGet(() -> {
-                    Category category = new Category();
-                    category.setCategoryName("Uncategorized");
-                    return category;
-                });
+    private Category createDefaultCategory() {
+        Category category = new Category();
+        category.setCategoryName("Uncategorized");
+        return category;
     }
 }
+
