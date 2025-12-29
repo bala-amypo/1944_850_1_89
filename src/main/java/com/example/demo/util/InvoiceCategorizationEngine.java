@@ -47,41 +47,41 @@ public class InvoiceCategorizationEngine {
     public Category determineCategory(Invoice invoice,
                                       List<CategorizationRule> rules) {
 
-        if (invoice == null || invoice.getDescription() == null || rules == null) {
+        if (invoice == null || invoice.description == null || rules == null) {
             return defaultCategory();
         }
 
-        String description = invoice.getDescription().toLowerCase();
+        String description = invoice.description.toLowerCase();
 
         // 1️⃣ EXACT MATCH
         for (CategorizationRule rule : rules) {
-            if ("EXACT".equalsIgnoreCase(rule.getType())) {
-                if (description.equals(rule.getValue().toLowerCase())) {
-                    return rule.getCategory();
+            if ("EXACT".equalsIgnoreCase(rule.conditionType)) {
+                if (description.equals(rule.conditionValue.toLowerCase())) {
+                    return rule.category;
                 }
             }
         }
 
         // 2️⃣ CONTAINS MATCH
         for (CategorizationRule rule : rules) {
-            if ("CONTAINS".equalsIgnoreCase(rule.getType())) {
-                if (description.contains(rule.getValue().toLowerCase())) {
-                    return rule.getCategory();
+            if ("CONTAINS".equalsIgnoreCase(rule.conditionType)) {
+                if (description.contains(rule.conditionValue.toLowerCase())) {
+                    return rule.category;
                 }
             }
         }
 
-        // 3️⃣ REGEX MATCH ✅ (FIXED)
+        // 3️⃣ REGEX MATCH ✅
         for (CategorizationRule rule : rules) {
-            if ("REGEX".equalsIgnoreCase(rule.getType())) {
+            if ("REGEX".equalsIgnoreCase(rule.conditionType)) {
                 Pattern pattern = Pattern.compile(
-                        rule.getValue(),
+                        rule.conditionValue,
                         Pattern.CASE_INSENSITIVE
                 );
                 Matcher matcher = pattern.matcher(description);
 
                 if (matcher.find()) {
-                    return rule.getCategory();
+                    return rule.category;
                 }
             }
         }
@@ -92,7 +92,7 @@ public class InvoiceCategorizationEngine {
 
     private Category defaultCategory() {
         Category category = new Category();
-        category.setCategoryName("Uncategorized");
+        category.categoryName = "Uncategorized";
         return category;
     }
 }
