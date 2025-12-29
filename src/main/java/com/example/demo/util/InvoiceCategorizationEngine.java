@@ -44,22 +44,19 @@ import java.util.regex.Pattern;
 @Component
 public class InvoiceCategorizationEngine {
 
-    /**
-     * Determines category for an invoice using rules
-     */
     public Category determineCategory(Invoice invoice,
                                       List<CategorizationRule> rules) {
 
         if (invoice == null || invoice.getDescription() == null || rules == null) {
-            return createDefaultCategory();
+            return defaultCategory();
         }
 
         String description = invoice.getDescription().toLowerCase();
 
         // 1️⃣ EXACT MATCH
         for (CategorizationRule rule : rules) {
-            if ("EXACT".equalsIgnoreCase(rule.getRuleType())) {
-                if (description.equals(rule.getPattern().toLowerCase())) {
+            if ("EXACT".equalsIgnoreCase(rule.getType())) {
+                if (description.equals(rule.getValue().toLowerCase())) {
                     return rule.getCategory();
                 }
             }
@@ -67,18 +64,18 @@ public class InvoiceCategorizationEngine {
 
         // 2️⃣ CONTAINS MATCH
         for (CategorizationRule rule : rules) {
-            if ("CONTAINS".equalsIgnoreCase(rule.getRuleType())) {
-                if (description.contains(rule.getPattern().toLowerCase())) {
+            if ("CONTAINS".equalsIgnoreCase(rule.getType())) {
+                if (description.contains(rule.getValue().toLowerCase())) {
                     return rule.getCategory();
                 }
             }
         }
 
-        // 3️⃣ REGEX MATCH (🔥 FIXED)
+        // 3️⃣ REGEX MATCH ✅ (FIXED)
         for (CategorizationRule rule : rules) {
-            if ("REGEX".equalsIgnoreCase(rule.getRuleType())) {
+            if ("REGEX".equalsIgnoreCase(rule.getType())) {
                 Pattern pattern = Pattern.compile(
-                        rule.getPattern(),
+                        rule.getValue(),
                         Pattern.CASE_INSENSITIVE
                 );
                 Matcher matcher = pattern.matcher(description);
@@ -89,17 +86,13 @@ public class InvoiceCategorizationEngine {
             }
         }
 
-        // 4️⃣ FALLBACK — NEVER RETURN NULL
-        return createDefaultCategory();
+        // 4️⃣ FALLBACK (NEVER NULL)
+        return defaultCategory();
     }
 
-    /**
-     * Default category for unmatched invoices
-     */
-    private Category createDefaultCategory() {
+    private Category defaultCategory() {
         Category category = new Category();
         category.setCategoryName("Uncategorized");
         return category;
     }
 }
-
